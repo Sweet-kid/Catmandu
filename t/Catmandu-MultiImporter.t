@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
+use Catmandu::Importer::Mock;
 
 my $pkg;
 BEGIN {
@@ -14,8 +15,15 @@ BEGIN {
 
 my $multi = $pkg->new(importers => []);    
 
-isa_ok $multi, 'Catmandu::Importer';
+can_ok $multi, 'each';
 
 is_deeply $multi->to_array, [];
 
-done_testing 3;
+$multi = $pkg->new(importers => [
+        Catmandu::Importer::Mock->new(size => 2),
+        Catmandu::Importer::Mock->new(size => 2),
+]);    
+
+is_deeply $multi->to_array, [{n=>0},{n=>1},{n=>0},{n=>1}];
+
+done_testing 4;

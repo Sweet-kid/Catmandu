@@ -11,13 +11,13 @@ sub generator {
     my ($self) = @_;
 
     sub {
-        state @generators = map { $_->generator } @{$self->importers};
-        state $gen = shift @generators;
+        state $generators = [map { $_->generator } @{$self->importers}];
+        state $gen = shift @$generators;
         while ($gen) {
             if (defined(my $data = $gen->())) {
                 return $data;
             } else {
-                $gen = shift @generators;
+                $gen = shift @$generators;
             }
         }
         return;
